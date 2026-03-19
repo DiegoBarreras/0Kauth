@@ -1,0 +1,17 @@
+# Variables de entorno
+backend/.env
+
+# Dependencias
+backend/node_modules/
+frontend/node_modules/
+
+# Build de producción
+frontend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

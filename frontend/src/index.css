@@ -1,0 +1,326 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background: #0a0a12;
+  color: #e8e8f0;
+  min-height: 100vh;
+}
+
+.contenedor {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #6b6b8a;
+  margin-top: 0.25rem;
+  margin-bottom: 2rem;
+}
+
+/* Formularios */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+label {
+  font-size: 0.85rem;
+  color: #8888aa;
+}
+
+input {
+  background: #12121e;
+  border: 1px solid #2a2a3d;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #e8e8f0;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+/* Botones */
+button, .btn-agregar {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.85rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 0.5rem;
+}
+
+button:hover, .btn-agregar:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0px);
+}
+
+button:disabled {
+  background: #1e1e2e;
+  color: #444460;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secundario {
+  background: transparent;
+  border: 1px solid #2a2a3d;
+  color: #8888aa;
+  width: auto;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-secundario:hover {
+  background: #12121e;
+  opacity: 1;
+  transform: none;
+}
+
+.btn-eliminar {
+  background: transparent;
+  border: 1px solid #3d1a2a;
+  color: #e05577;
+  width: auto;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  margin-top: 0;
+}
+
+.btn-eliminar:hover {
+  background: #1a0a12;
+  opacity: 1;
+  transform: none;
+}
+
+/* Error */
+.error {
+  color: #e05577;
+  font-size: 0.85rem;
+  background: #1a0a12;
+  border: 1px solid #3d1a2a;
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+/* Lista de cuentas */
+.lista-cuentas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.tarjeta-cuenta {
+  background: #12121e;
+  border: 1px solid #2a2a3d;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.2s;
+}
+
+.tarjeta-cuenta:hover {
+  border-color: #7c3aed;
+}
+
+.cuenta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.servicio {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #e8e8f0;
+}
+
+.cuenta {
+  font-size: 0.85rem;
+  color: #6b6b8a;
+}
+
+.vacio {
+  color: #444460;
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 0.95rem;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  background: transparent;
+  border: 1px solid #2a2a3d;
+  color: #8888aa;
+  width: auto;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  margin-top: 0;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  border-color: #7c3aed;
+  color: #a78bfa;
+  opacity: 1;
+  transform: none;
+}
+
+.tab.activo {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+/* QR placeholder */
+.qr-placeholder {
+  background: #12121e;
+  border: 1px dashed #2a2a3d;
+  border-radius: 10px;
+  padding: 3rem;
+  text-align: center;
+  color: #444460;
+}
+
+/* Links */
+p a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+p {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #6b6b8a;
+  font-size: 0.9rem;
+}
+
+/* Código TOTP */
+.codigo {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #a78bfa;
+  margin-top: 0.4rem;
+  transition: color 0.3s;
+}
+
+.codigo.urgente {
+  color: #e05577;
+}
+
+/* Temporizador circular */
+.cuenta-acciones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.temporizador {
+  position: relative;
+  width: 42px;
+  height: 42px;
+}
+
+.circulo-svg {
+  width: 42px;
+  height: 42px;
+  transform: rotate(-90deg);
+}
+
+.circulo-fondo {
+  fill: none;
+  stroke: #2a2a3d;
+  stroke-width: 3;
+}
+
+.circulo-progreso {
+  fill: none;
+  stroke: #7c3aed;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s linear, stroke 0.3s;
+}
+
+.circulo-progreso.urgente {
+  stroke: #e05577;
+}
+
+.tiempo-texto {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: #8888aa;
+}
+
+.tiempo-texto.urgente {
+  color: #e05577;
+}
