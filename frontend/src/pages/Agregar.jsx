@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../utils/api'
+import { Html5Qrcode } from "html5-qrcode";
+import * as OTPAuth from 'otpauth'
 
 function Agregar() {
   const [modo, setModo] = useState('manual') // 'manual' o 'qr'
@@ -10,6 +12,59 @@ function Agregar() {
   const [error, setError] = useState(null)
   const [cargando, setCargando] = useState(false)
   const navigate = useNavigate()
+  const html5QrCode = useRef(null);
+
+  useEffect(() => {
+    if (modo === 'qr') {
+      Html5Qrcode.getCameras().then(devices => {
+        if (devices && devices.length) {
+          const cameraId = devices[0].id;
+
+          html5QrCode.current = new Html5Qrcode("reader");
+          html5QrCode.current.start(
+            cameraId,
+            {
+              fps: 10,
+              qrbox: { width: 250, height: 250 }
+            },
+            (decodedText) => {
+              if (decodedText.startsWith('otpauth://')) {
+                const postParseCode = OTPAuth.URI.parse(decodedText);
+                api.agregarCuenta({
+                  nom_servicio: postParseCode.issuer,
+                  nom_cuenta: postParseCode.label,
+                  totp_secreto: postParseCode.secret.base32,
+                  totp_algoritmo: postParseCode.algorithm,
+                  totp_digitos: postParseCode.digits,
+                  totp_frecuencia: postParseCode.period
+                }) .then(() => {
+                  html5QrCode.current.stop()
+                }) .then(() => {
+                  html5QrCode.current = null
+                  navigate('/dashboard')
+                }) .catch(err => {
+                  setError(err.message)
+                })
+              } else if (decodedText.startsWith('0kauth://')) {
+                // LLENAR CON API PROPIETARIA PARA LECTURA DE QRs ZK
+              }
+            },
+            () => {}
+          )
+          .catch(err => {
+            setError('No se pudo acceder al scanner.')
+          }) 
+        }
+      }).catch(err => {
+        setError('No se pudo acceder a la cámara. Verifica los permisos.')
+      })
+    }
+    return () => {
+      if (html5QrCode.current) {
+        html5QrCode.current.stop()
+      }
+    }
+  }, [modo, navigate])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -95,9 +150,7 @@ function Agregar() {
           </button>
         </form>
       ) : (
-        <div className="qr-placeholder">
-          <p>Escáner de QR próximamente</p>
-        </div>
+        <div id="reader"></div>
       )}
     </div>
   )
