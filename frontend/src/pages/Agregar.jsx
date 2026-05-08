@@ -95,13 +95,13 @@ function Agregar() {
           className={modo === 'manual' ? 'tab activo' : 'tab'}
           onClick={() => setModo('manual')}
         >
-          Manual
+          Manual ✍🏿
         </button>
         <button
           className={modo === 'qr' ? 'tab activo' : 'tab'}
           onClick={() => setModo('qr')}
         >
-          Escanear QR
+          Escanear QR 📷
         </button>
       </div>
 

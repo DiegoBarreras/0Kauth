@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
 import cuentasRoutes from './routes/cuentas.js';
+import zkRoutes from './routes/zk.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -14,6 +15,7 @@ app.use(express.json());
 // Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/cuentas', cuentasRoutes);
+app.use('/api/zk', zkRoutes);
 
 // Ruta de prueba
 app.get('/api/ping', (req, res) => {

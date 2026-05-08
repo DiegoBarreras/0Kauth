@@ -54,4 +54,10 @@ export const api = {
     request(`/cuentas/${id}`, {
       method: 'DELETE',
     }),
+
+  verificarZK: (proof, publicSignals) =>
+    request('/zk/verificar', {
+      method: 'POST',
+      body: JSON.stringify({ proof, publicSignals }),
+    }),
 };

@@ -123,6 +123,9 @@ function Dashboard() {
         <button onClick={cerrarSesion} className="btn-secundario">
           Salir
         </button>
+        <Link to="/verificar-zk" className="btn-secundario">
+          Verificar ZK
+        </Link>
       </div>
 
       {error && <p className="error">{error}</p>}
