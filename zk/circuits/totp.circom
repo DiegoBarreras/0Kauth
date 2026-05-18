@@ -1,30 +1,21 @@
 pragma circom 2.0.0;
 
 include "../node_modules/circomlib/circuits/poseidon.circom";
-include "../node_modules/circomlib/circuits/comparators.circom";
 
 template TOTP() {
-    // Entradas privadas
+    // Entrada privada — solo la conoce el usuario
     signal input secreto;
 
-    // Entradas públicas
-    signal input timestamp;
-    signal input codigo;
-    signal input ventana;
+    // Entradas públicas — las ve el servidor
+    signal input challenge;
+    signal output hash;
 
-    // Verificamos que ventana * 30 <= timestamp
-    component lte = LessEqThan(64);
-    lte.in[0] <== ventana * 30;
-    lte.in[1] <== timestamp;
-    lte.out === 1;
-
-    // Calcula el hash con Poseidon
+    // Calcula Poseidon(secreto, challenge)
     component hasher = Poseidon(2);
     hasher.inputs[0] <== secreto;
-    hasher.inputs[1] <== ventana;
+    hasher.inputs[1] <== challenge;
 
-    // Verifica que el codigo coincide
-    codigo === hasher.out;
+    hash <== hasher.out;
 }
 
-component main {public [timestamp, codigo, ventana]} = TOTP();
+component main {public [challenge]} = TOTP();

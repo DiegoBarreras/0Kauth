@@ -1,21 +1,18 @@
 import * as snarkjs from 'snarkjs';
 import { buildPoseidon } from 'circomlibjs';
 
-export async function generarPruebaZK(secreto, timestamp) {
+export async function generarPruebaZK(secreto, challenge) {
   const poseidon = await buildPoseidon();
 
-  const ts = BigInt(timestamp);
-  const ventana = ts / 30n;
   const secretoBig = BigInt(secreto);
+  const challengeBig = BigInt(challenge);
 
-  const hash = poseidon([secretoBig, ventana]);
-  const codigo = poseidon.F.toString(hash);
+  const hash = poseidon([secretoBig, challengeBig]);
+  const hashStr = poseidon.F.toString(hash);
 
   const input = {
     secreto: secretoBig.toString(),
-    timestamp: ts.toString(),
-    ventana: ventana.toString(),
-    codigo,
+    challenge: challengeBig.toString(),
   };
 
   const { proof, publicSignals } = await snarkjs.groth16.fullProve(
@@ -24,5 +21,5 @@ export async function generarPruebaZK(secreto, timestamp) {
     '/zk/totp_final.zkey'
   );
 
-  return { proof, publicSignals };
+  return { proof, publicSignals, hash: hashStr };
 }

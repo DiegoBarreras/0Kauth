@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { api } from '../utils/api'
+import { derivarLlave, generarSalt } from '../utils/crypto'
+import { guardarLlave } from '../utils/session'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -17,6 +19,12 @@ function Login() {
     try {
       const data = await api.login(email, password)
       localStorage.setItem('token', data.token)
+
+      // Deriva la llave AES desde la contraseña
+      const salt = email + '_0kauth_salt'
+      const llave = await derivarLlave(password, salt)
+      guardarLlave(llave)
+
       navigate('/dashboard')
     } catch (err) {
       setError(err.message)

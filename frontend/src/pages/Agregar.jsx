@@ -1,8 +1,10 @@
-import { useEffect, useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../utils/api'
-import { Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode } from 'html5-qrcode'
 import * as OTPAuth from 'otpauth'
+import { cifrarSecreto, generarSalt } from '../utils/crypto'
+import { obtenerLlave } from '../utils/session'
 
 function Agregar() {
   const [modo, setModo] = useState('manual') // 'manual' o 'qr'
@@ -29,24 +31,31 @@ function Agregar() {
             },
             (decodedText) => {
               if (decodedText.startsWith('otpauth://')) {
-                const postParseCode = OTPAuth.URI.parse(decodedText);
-                api.agregarCuenta({
-                  nom_servicio: postParseCode.issuer,
-                  nom_cuenta: postParseCode.label,
-                  totp_secreto: postParseCode.secret.base32,
-                  totp_algoritmo: postParseCode.algorithm,
-                  totp_digitos: postParseCode.digits,
-                  totp_frecuencia: postParseCode.period
-                }) .then(() => {
-                  html5QrCode.current.stop()
-                }) .then(() => {
-                  html5QrCode.current = null
-                  navigate('/dashboard')
-                }) .catch(err => {
-                  setError(err.message)
-                })
-              } else if (decodedText.startsWith('0kauth://')) {
-                // LLENAR CON API PROPIETARIA PARA LECTURA DE QRs ZK
+                const postParseCode = OTPAuth.URI.parse(decodedText)
+                
+                obtenerLlave().then ? null : (async () => {
+                  const llave = obtenerLlave()
+                  if (!llave) { setError('Sesión expirada'); return }
+
+                  const salt = generarSalt()
+                  const { secretoCifrado, iv } = await cifrarSecreto(
+                    postParseCode.secret.base32, llave
+                  )
+
+                  api.agregarCuenta({
+                    nom_servicio: postParseCode.issuer,
+                    nom_cuenta: postParseCode.label,
+                    totp_secreto: secretoCifrado,
+                    totp_algoritmo: postParseCode.algorithm,
+                    totp_digitos: postParseCode.digits,
+                    totp_frecuencia: postParseCode.period,
+                    salt,
+                    iv
+                  })
+                  .then(() => html5QrCode.current.stop())
+                  .then(() => { html5QrCode.current = null; navigate('/dashboard') })
+                  .catch(err => setError(err.message))
+                })()
               }
             },
             () => {}
@@ -66,20 +75,35 @@ function Agregar() {
     }
   }, [modo, navigate])
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    setError(null)
-    setCargando(true)
+async function handleSubmit(e) {
+  e.preventDefault()
+  setError(null)
+  setCargando(true)
 
-    try {
-      await api.agregarCuenta({ nom_servicio, nom_cuenta, totp_secreto })
-      navigate('/dashboard')
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setCargando(false)
-    }
+  try {
+    const llave = obtenerLlave()
+    if (!llave) throw new Error('Sesión expirada, vuelve a iniciar sesión')
+
+    const salt = generarSalt()
+    const { secretoCifrado, iv } = await cifrarSecreto(totp_secreto, llave)
+
+    await api.agregarCuenta({
+      nom_servicio,
+      nom_cuenta,
+      totp_secreto: secretoCifrado,
+      totp_algoritmo: 'SHA1',
+      totp_digitos: 6,
+      totp_frecuencia: 30,
+      salt,
+      iv
+    })
+    navigate('/dashboard')
+  } catch (err) {
+    setError(err.message)
+  } finally {
+    setCargando(false)
   }
+}
 
   return (
     <div className="contenedor">

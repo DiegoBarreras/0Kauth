@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { api } from '../utils/api'
 import * as OTPAuth from 'otpauth'
+import { descifrarSecreto } from '../utils/crypto'
+import { obtenerLlave } from '../utils/session'
 
 function calcularCodigo(secreto, algoritmo, digitos, frecuencia) {
   try {
@@ -91,7 +93,32 @@ function Dashboard() {
   async function cargarCuentas() {
     try {
       const data = await api.getCuentas()
-      setCuentas(data.cuentas)
+      const llave = obtenerLlave()
+      console.log('llave:', llave)
+
+      if (!llave) {
+        setError('Sesión expirada, vuelve a iniciar sesión')
+        return
+      }
+
+      const cuentasDescifradas = await Promise.all(
+        data.cuentas.map(async (cuenta) => {
+          try {
+            const secretoDescifrado = await descifrarSecreto(
+              cuenta.totp_secreto,
+              cuenta.iv,
+              llave
+            )
+            console.log('descifrado:', secretoDescifrado)
+            return { ...cuenta, totp_secreto: secretoDescifrado }
+          } catch (err) {
+            console.error('error descifrado:', err)
+            return { ...cuenta, totp_secreto: '------' }
+          }
+        })
+      )
+
+      setCuentas(cuentasDescifradas)
     } catch (err) {
       setError(err.message)
     } finally {

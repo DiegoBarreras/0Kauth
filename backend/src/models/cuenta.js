@@ -9,12 +9,12 @@ export const CuentaModel = {
     return rows;
   },
 
-  async crear({ usuario_id, nom_servicio, nom_cuenta, totp_secreto, totp_algoritmo, totp_digitos, totp_frecuencia }) {
+  async crear({ usuario_id, nom_servicio, nom_cuenta, totp_secreto, totp_algoritmo, totp_digitos, totp_frecuencia, salt, iv }) {
     const [result] = await pool.query(
       `INSERT INTO cuentas_almacenadas 
-       (usuario_id, nom_servicio, nom_cuenta, totp_secreto, totp_algoritmo, totp_digitos, totp_frecuencia) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [usuario_id, nom_servicio, nom_cuenta, totp_secreto, totp_algoritmo, totp_digitos, totp_frecuencia]
+      (usuario_id, nom_servicio, nom_cuenta, totp_secreto, totp_algoritmo, totp_digitos, totp_frecuencia, salt, iv) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [usuario_id, nom_servicio, nom_cuenta, totp_secreto, totp_algoritmo, totp_digitos, totp_frecuencia, salt, iv]
     );
     return { id: result.insertId, nom_servicio, nom_cuenta };
   },

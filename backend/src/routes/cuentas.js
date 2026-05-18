@@ -18,10 +18,10 @@ router.get('/', requireAuth, async (req, res) => {
 // POST /api/cuentas
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { nom_servicio, nom_cuenta, totp_secreto, totp_algoritmo, totp_digitos, totp_frecuencia } = req.body;
+    const { nom_servicio, nom_cuenta, totp_secreto, totp_algoritmo, totp_digitos, totp_frecuencia, salt, iv } = req.body;
 
-    if (!nom_servicio || !nom_cuenta || !totp_secreto)
-      return res.status(400).json({ error: 'nom_servicio, nom_cuenta y totp_secreto son requeridos' });
+    if (!nom_servicio || !nom_cuenta || !totp_secreto || !salt || !iv)
+      return res.status(400).json({ error: 'nom_servicio, nom_cuenta, totp_secreto, salt e iv son requeridos' });
 
     const cuenta = await CuentaModel.crear({
       usuario_id: req.user.sub,
@@ -29,8 +29,10 @@ router.post('/', requireAuth, async (req, res) => {
       nom_cuenta,
       totp_secreto,
       totp_algoritmo: totp_algoritmo ?? 'SHA1',
-      totp_digitos:   totp_digitos   ?? 6,
+      totp_digitos: totp_digitos ?? 6,
       totp_frecuencia: totp_frecuencia ?? 30,
+      salt,
+      iv
     });
 
     return res.status(201).json({ cuenta });
