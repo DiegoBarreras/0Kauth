@@ -56,6 +56,26 @@ function Agregar() {
                   .then(() => { html5QrCode.current = null; navigate('/dashboard') })
                   .catch(err => setError(err.message))
                 })()
+              } else {
+                try {
+                  const data = JSON.parse(decodedText)
+                  if (data.tipo === '0kauth-challenge') {
+                    // flujo ZK
+                    html5QrCode.current.stop().then(() => {
+                      html5QrCode.current = null
+                      navigate('/verificar-zk', { 
+                        state: { 
+                          challenge: data.challenge,
+                          id: data.id,
+                          callback: data.callback,
+                          servicio: data.servicio
+                        }
+                      })
+                    })
+                  }
+                } catch {
+                  // no es JSON válido, ignorar
+                }
               }
             },
             () => {}
