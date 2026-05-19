@@ -1,5 +1,5 @@
-CREATE DATABASE 0kauth;
-USE 0kauth;
+-- CREATE DATABASE 0kauth;
+-- USE 0kauth;
 
 CREATE TABLE usuarios (
     id            INT AUTO_INCREMENT PRIMARY KEY,
