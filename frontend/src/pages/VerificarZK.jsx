@@ -47,6 +47,8 @@ function VerificarZK() {
   }
 
   async function handleVerificar(cuenta) {
+    console.log('secreto:', cuenta.totp_secreto)
+    console.log('challenge:', challengeData.challenge)
     setError(null)
     setResultado(null)
     setCargando(true)
