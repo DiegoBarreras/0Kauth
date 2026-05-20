@@ -56,6 +56,10 @@ function VerificarZK() {
         cuenta.totp_secreto,
         challengeData.challenge
       )
+      
+      console.log('challenge:', challengeData.challenge)
+      console.log('publicSignals:', publicSignals)
+      console.log('proof:', proof)
 
       const res = await fetch(challengeData.callback, {
         method: 'POST',
