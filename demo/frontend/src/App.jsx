@@ -3,7 +3,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import * as snarkjs from 'snarkjs'
 import { buildPoseidon } from 'circomlibjs'
 
-const DEMO_BACKEND = 'http://192.168.100.59:3000/api'
+const DEMO_BACKEND = 'https://zerokauth-demo-backend.onrender.com/api'
 
 async function generarPruebaZK(secreto, challenge) {
   const poseidon = await buildPoseidon()
