@@ -119,7 +119,12 @@ function VerificarZK() {
             <div
               key={cuenta.id}
               className="tarjeta-cuenta"
-              onClick={() => !cargando && handleVerificar(cuenta)}
+              onClick={() => {
+                if (!cargando) {
+                  setCuentaSeleccionada(cuenta)
+                  handleVerificar(cuenta)
+                }
+              }}
               style={{ cursor: cargando ? 'not-allowed' : 'pointer' }}
             >
               <div className="cuenta-info">
