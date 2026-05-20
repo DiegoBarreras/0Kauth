@@ -15,12 +15,15 @@ function Agregar() {
   const [cargando, setCargando] = useState(false)
   const navigate = useNavigate()
   const html5QrCode = useRef(null);
+  const [camaras, setCamaras] = useState([])
+  const [camaraActual, setCamaraActual] = useState(0)
 
   useEffect(() => {
     if (modo === 'qr') {
       Html5Qrcode.getCameras().then(devices => {
         if (devices && devices.length) {
-          const cameraId = devices[0].id;
+          setCamaras(devices)
+          const cameraId = devices[camaraActual].id
 
           html5QrCode.current = new Html5Qrcode("reader");
           html5QrCode.current.start(
@@ -93,7 +96,7 @@ function Agregar() {
         html5QrCode.current.stop()
       }
     }
-  }, [modo, navigate])
+ }, [modo, navigate, camaraActual])
 
 async function handleSubmit(e) {
   e.preventDefault()
@@ -123,6 +126,18 @@ async function handleSubmit(e) {
   } finally {
     setCargando(false)
   }
+}
+
+async function cambiarCamara() {
+  if (camaras.length < 2) return
+  
+  if (html5QrCode.current) {
+    await html5QrCode.current.stop()
+    html5QrCode.current = null
+  }
+
+  const siguiente = (camaraActual + 1) % camaras.length
+  setCamaraActual(siguiente)
 }
 
   return (
@@ -194,7 +209,18 @@ async function handleSubmit(e) {
           </button>
         </form>
       ) : (
-        <div id="reader"></div>
+        <div>
+          {camaras.length > 1 && (
+            <button 
+              onClick={cambiarCamara} 
+              className="btn-secundario"
+              style={{ marginBottom: '0.75rem' }}
+            >
+              🔄 Cambiar cámara
+            </button>
+          )}
+          <div id="reader"></div>
+        </div>
       )}
     </div>
   )
